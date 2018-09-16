@@ -37,7 +37,6 @@ function selectUnitMultiplier(unit){
 }
 
 function convertToMiliseconds(time){
-  var ms = 0;
   var update = [];
   while (!(time.unit == "milisecond")){
     update = selectUnitMultiplier(time.unit);
