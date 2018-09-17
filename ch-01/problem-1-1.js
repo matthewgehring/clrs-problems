@@ -1,3 +1,5 @@
+//TODO:  create function to solve max n given time restraint
+
 var time = [
   {unit : "second", value: 1},
   {unit : "minute", value: 1},
@@ -45,8 +47,40 @@ function convertToMiliseconds(time){
   };
 }
 
-console.log(time);
+var array_of_functions = [
+    function calculateLogN(n){
+      return Math.log2(n);
+    },
+    function calculateSqrtN(n){
+      return Math.sqrt(n);
+    },
+    function calculateN(n){
+      return n;
+    },
+    function calculateNlogN(n){
+      return (n * Math.log2(n));
+    },
+    function CalculateNSquared(n){
+      return n*n;
+    },
+    function calculateNCubed(n){
+      return Math.pow(n, 3);
+    },
+    function calculateTwoToN(n){
+      return Math.pow(2, n);
+    },
+    function calculateNfactorial(n){
+      var rval = 1;
+      for (var i = 2; i <= n; i++)
+          rval = rval * i;
+      return rval;
+    }
+]
+
 time.forEach(function(time){
   convertToMiliseconds(time);
 });
-console.log(time);
+
+for (i = 0; i < array_of_functions.length; i++) {
+    console.log(array_of_functions[i](9));
+}
