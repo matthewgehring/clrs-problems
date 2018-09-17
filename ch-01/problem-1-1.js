@@ -1,5 +1,5 @@
-//TODO:  create function to solve max n given time restraint
-
+//TODO:  Add Comments, add runTimeCalc?
+//data from problem statement
 var time = [
   {unit : "second", value: 1},
   {unit : "minute", value: 1},
@@ -9,13 +9,24 @@ var time = [
   {unit : "year", value: 1},
   {unit : "century", value: 1}
 ];
-
+//empty array to store solution
+var solution = [
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  []
+];
+//logic used to convert units and values from problem statement into microseconds
 function selectUnitMultiplier(unit){
   var multiplier = 0;
-  var newUnit = "Foo";
+  var newUnit = "";
   if(unit == "second"){
-    multiplier = 1000;
-    newUnit = "milisecond";
+    multiplier = 1000000;
+    newUnit = "microsecond";
   }else if (unit == "minute") {
     multiplier = 60;
     newUnit = "second";
@@ -37,50 +48,72 @@ function selectUnitMultiplier(unit){
   }
   return [multiplier, newUnit];
 }
-
-function convertToMiliseconds(time){
+//updates time array with converted results
+function convertToMicroseconds(time){
   var update = [];
-  while (!(time.unit == "milisecond")){
+  while (!(time.unit == "microsecond")){
     update = selectUnitMultiplier(time.unit);
     time.value *= update[0];
     time.unit = update[1];
   };
 }
-
+//calls function for each element in time array
+time.forEach(function(time){
+  convertToMicroseconds(time);
+});
+//initializes set of functions to calculate make problem size
 var array_of_functions = [
-    function calculateLogN(n){
-      return Math.log2(n);
-    },
-    function calculateSqrtN(n){
-      return Math.sqrt(n);
-    },
-    function calculateN(n){
+    // {funct: function calculateSqrtN(n){
+    //   return Math.sqrt(n);
+    // }, granularity: 1000000000000}
+    {funct: function calculateN(n){
       return n;
-    },
-    function calculateNlogN(n){
+    }, granularity: 1000000},
+    {funct: function calculateNlogN(n){
       return (n * Math.log2(n));
-    },
-    function CalculateNSquared(n){
+    }, granularity: 100000},
+    {funct: function CalculateNSquared(n){
       return n*n;
-    },
-    function calculateNCubed(n){
+    }, granularity: 1},
+    {funct: function calculateNCubed(n){
       return Math.pow(n, 3);
-    },
-    function calculateTwoToN(n){
+    }, granularity: 1},
+    {funct: function calculateTwoToN(n){
       return Math.pow(2, n);
-    },
-    function calculateNfactorial(n){
+    }, granularity: 1},
+    {funct: function calculateNfactorial(n){
       var rval = 1;
       for (var i = 2; i <= n; i++)
           rval = rval * i;
       return rval;
-    }
+    }, granularity: 1}
 ]
 
-time.forEach(function(time){
-  convertToMiliseconds(time);
-});
+// function runTimeCalc(granularity){
+//   var n = 0;
+//   for (x = 0; x < time.length; x++){
+//     while(array_of_functions[y](n) <= time[x].value){
+//       n += granularity;
+//     }
+//     return n;
+//   }
+// }
+//gives solution to first function, would be too long to calculate with other method, might revist this
+for (x = 0; x < time.length; x++){
+  solution[0][x] = "2 to the power of " + time[x].value.toString();
+};
 
-for (i = 0; i < array_of_functions.length; i++) {
-    console.log(array_of_functions[i](9));
+//loops through function array, calculates make problem size
+for (y = 0; y < array_of_functions.length; y++) {
+  for (x = 0; x < time.length; x++){
+    var n = 1;
+    while(array_of_functions[y].funct(n) <= time[x].value){
+      n += array_of_functions[y].granularity;
+    }
+    solution[y+1][x] = n-1;
+    n = 1;
+
+  }
 }
+
+console.log(solution);
