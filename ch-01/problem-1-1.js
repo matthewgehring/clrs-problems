@@ -1,4 +1,4 @@
-//TODO:  Add Comments, add runTimeCalc?
+//TODO:  Consider using counter instead of process.hrtime, if counter > max acceptable incriments {increase granularity}
 //data from problem statement
 var time = [
   {unit : "second", value: 1},
@@ -63,9 +63,9 @@ time.forEach(function(time){
 });
 //initializes set of functions to calculate make problem size
 var array_of_functions = [
-    // {funct: function calculateSqrtN(n){
-    //   return Math.sqrt(n);
-    // }, granularity: 1000000000000}
+    {funct: function calculateSqrtN(n){
+      return Math.sqrt(n);
+    }, granularity: 1000000000000},
     {funct: function calculateN(n){
       return n;
     }, granularity: 1000000},
@@ -98,22 +98,36 @@ var array_of_functions = [
 //     return n;
 //   }
 // }
+
+function clock(start) {
+    if ( !start ) return process.hrtime();
+    var end = process.hrtime(start);
+    return Math.round((end[0]*1000) + (end[1]/1000000));
+}
+
+
 //gives solution to first function, would be too long to calculate with other method, might revist this
 for (x = 0; x < time.length; x++){
   solution[0][x] = "2 to the power of " + time[x].value.toString();
 };
 
-//loops through function array, calculates make problem size
+//loops through function array, calculates problem size
 for (y = 0; y < array_of_functions.length; y++) {
   for (x = 0; x < time.length; x++){
     var n = 1;
+    var start = clock();
     while(array_of_functions[y].funct(n) <= time[x].value){
       n += array_of_functions[y].granularity;
     }
-    solution[y+1][x] = n-1;
-    n = 1;
 
+    var duration = clock(start);
+    if (duration >= 500){
+      array_of_functions[y].granularity *= array_of_functions[y].granularity;
+    }
+    console.log("Took "+duration+"ms " + array_of_functions[y].granularity);
+    solution[y+1][x] = n-1;
   }
 }
 
 console.log(solution);
+console.log(process.hrtime());
